@@ -46,7 +46,8 @@ for r in range(R):
 
 
 
-
+	hh = np.zeros(NSs.shape)
+	hh_shift = np.zeros(NSs.shape)
 	for i in range(NSs.shape[0]):
 		NS = int(NSs[i])
 		# analytic tangent, n = 1
@@ -58,10 +59,16 @@ for r in range(R):
 		dl2 = dl_dt(p, NS, n = 2) * (2 * np.pi / NS)
 		quadrature_n2[i] += (error_func(biot_savart(r_eval, l2, dl2)))
 		# hanson and hirshman
-		hanson_hirshman_circle[i] += (error_func(biot_savart_hanson_hirshman(r_eval, l)))
+		hh[i] = (error_func(biot_savart_hanson_hirshman(r_eval, l)))
+		hanson_hirshman_circle[i] += hh[i]
 		# shift
 		l_shift = l_shiftcurvature(p, NS)
-		hanson_hirshman_shift_circle[i] += (error_func(biot_savart_hanson_hirshman(r_eval, l_shift)))
+		hh_shift[i] = (error_func(biot_savart_hanson_hirshman(r_eval, l_shift)))
+		hanson_hirshman_shift_circle[i] += hh_shift[i]
+
+	axes[0].loglog(NSs, hh, alpha=0.25, color = 'blue', linewidth=0.5)#, label = "Shifted piecewise linear")
+	axes[0].loglog(NSs, hh_shift, alpha=0.25, color = 'orange', linewidth=0.5)
+
 
 ##################################################################
 # PLOTTING
@@ -116,7 +123,8 @@ for r in range(R):
 
 	error_func = partial(error_in_B, B_exact)
 
-
+	hh = np.zeros(NSs.shape)
+	hh_shift = np.zeros(NSs.shape)
 	for i in range(NSs.shape[0]):
 		NS = int(NSs[i])
 
@@ -131,11 +139,19 @@ for r in range(R):
 		quadrature_n2[i] += (error_func(biot_savart(r_eval, l2, dl2)))
 
 		# hanson and hirshman
-		hanson_hirshman_w7x[i] += (error_func(biot_savart_hanson_hirshman(r_eval, l)))
+		hh[i] = (error_func(biot_savart_hanson_hirshman(r_eval, l)))
+		hanson_hirshman_w7x[i] += hh[i]
 
 		# shift
 		l_shift = l_shiftcurvature(p, NS)
-		hanson_hirshman_shift_w7x[i] += (error_func(biot_savart_hanson_hirshman(r_eval, l_shift)))
+		hh_shift[i] = (error_func(biot_savart_hanson_hirshman(r_eval, l_shift)))
+		hanson_hirshman_shift_w7x[i] += hh_shift[i]
+
+	axes[1].loglog(NSs, hh, alpha=0.25, color = 'blue', linewidth=0.5)#, label = "Shifted piecewise linear")
+	axes[1].loglog(NSs, hh_shift, alpha=0.25, color = 'orange', linewidth=0.5)
+
+
+
 
 ##################################################################
 # PLOTTING
@@ -564,8 +580,8 @@ plt.axis("equal")
 plt.show()
 """
 
+R=1
 
-R = 1
 
 
 NSs = np.asarray([20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 4000, 5000, 6000, 8000, 10000])#6000, 32000, 64000])#, 128000]
@@ -582,15 +598,21 @@ for r in range(R):
 	B_exact_quad, B_exact_hh, B_exact_quad2, B_exact_hh_shift = d_shaped_B(NS_max, r_eval)
 	error_func = partial(error_in_B, B_exact_hh)
 
-
+	hh = np.zeros(NSs.shape)
+	hh_shift = np.zeros(NSs.shape)
 	for i in range(NSs.shape[0]):
 		NS = int(NSs[i])
 		print(NS)
 		B1, B2, B4, B5 = d_shaped_B(NS, r_eval)
 		quadrature[i] += error_func(B1)
-		hanson_hirshman_D[i] += (error_func(B2))
+		hh[i] = (error_func(B2))
+		hanson_hirshman_D[i] += hh[i]
 		quadrature_n2[i] += (error_func(B4))
-		hanson_hirshman_shift_D[i] += (error_func(B5))
+		hh_shift[i] = (error_func(B5))
+		hanson_hirshman_shift_D[i] += hh_shift[i]
+
+	axes[2].loglog(NSs, hh, alpha=0.25, color = 'blue', linewidth=0.5)#, label = "Shifted piecewise linear")
+	axes[2].loglog(NSs, hh_shift, alpha=0.25, color = 'orange', linewidth=0.5)
 
 
 ##################################################################
